@@ -12,6 +12,8 @@
 # limitations under the License.
 
 import datetime
+import six
+
 
 from testinfra.modules.base import Module
 
@@ -316,15 +318,21 @@ class WindowsFile(File):
         >>> host.file(r"C:/nonexistent").exists
         False
         """
-        return self.check_output("powershell -command \"Test-Path %s\"", self.path) == "True"
+        return self.check_output(
+            "powershell -command \"Test-Path %s\"", self.path) == "True"
 
     @property
     def is_file(self):
-        return self.check_output("powershell -command \"(Get-Item %s) -is [System.IO.FileInfo]\"", self.path) == "True"
+        return self.check_output(
+            "powershell -command \"(Get-Item %s) -is [System.IO.FileInfo]\"",
+            self.path) == "True"
 
     @property
     def is_directory(self):
-        return self.check_output("powershell -command \"(Get-Item %s) -is [System.IO.DirectoryInfo]\"", self.path) == "True"
+        return self.check_output(
+            # noqa: E501
+            "powershell -command \"(Get-Item %s) -is [System.IO.DirectoryInfo]\"",
+            self.path) == "True"
 
     @property
     def is_pipe(self):
